@@ -1,5 +1,6 @@
 package ECommerce.Model;
 
+import ECommerce.Util.Apresentacao;
 import java.text.NumberFormat;
 
 import ECommerce.Util.FormataTexto;
@@ -50,10 +51,10 @@ public class Produto {
 	
 	//formata a visualização do catálogo
 	public void visualizar() {
-		System.out.println(FormataTexto.formata(" ID:" + this.id, 75));
-		System.out.println(FormataTexto.formata(" Produto: " + this.nome, 75));
-		System.out.println(FormataTexto.formata(" Sobre: " + this.descricao, 75));
-		System.out.println(FormataTexto.formata(" " + formatarValor(this.valor), 75));
+		Apresentacao.geral(" ID:" + this.id);
+		Apresentacao.geral(" Produto: " + this.nome);
+		Apresentacao.geral(" Sobre: " + this.descricao);
+		Apresentacao.geral(" " + formatarValor(this.valor));
 	}
 	//formata valor do item
 	public static String formatarValor(double valor) {
@@ -62,6 +63,11 @@ public class Produto {
 		//String valorFormatado = new String();
 		String valorFormatado = nf.format(valor);
 		return valorFormatado;
+	}
+	
+	public void visualizaResumo() {
+		Apresentacao.geral(" Produto: " + nome);
+		Apresentacao.geral(" " + Produto.formatarValor(valor));
 	}
 
 }

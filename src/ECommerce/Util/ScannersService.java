@@ -23,7 +23,7 @@ public class ScannersService {
 		try {
 			opcao = leia.nextInt();
 		}catch(InputMismatchException e) {
-			System.out.println(Estetica.TEXT_RED_BOLD + Estetica.ANSI_WHITE_BACKGROUND + erro);
+			Apresentacao.geralErro(erro);;
 			opcao =  padrao;
 		}
 		leia.nextLine();

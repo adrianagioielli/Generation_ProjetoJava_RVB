@@ -7,20 +7,24 @@ import java.util.List;
 
 import ECommerce.Controller.Produtos;
 import ECommerce.Controller.Carrinho;
+import ECommerce.Controller.Compra;
+import ECommerce.Util.Apresentacao;
 import ECommerce.Util.Estetica;
 import ECommerce.Util.FormataTexto;
 import ECommerce.Util.ScannersService;
+import ECommerce.Repository.ProdutosRepository;
 
 public class Menu {
 	
-	private static Carrinho carrinho = new Carrinho(); 
+	private static ProdutosRepository produtos = new Produtos();
+	private static Carrinho carrinho = new Carrinho(produtos); 
 	private static Scanner leia = ScannersService.getLeitura();
+	private static Compra compra = new Compra();
 	
 	public static void main(String[] args) {
 	
+		System.out.println(Estetica.TEXT_RESET);
 		int opcao = 0;
-		
-		Produtos.inicializaProdutos();
 		
 		do {
 			mostraMenuPrincipal();
@@ -43,83 +47,68 @@ public class Menu {
 				break;
 			//pagina de pagto: lista itens no carrinho, soma valores para pagamento e encerra compra
 			case 3:
-			
+				compra.pagamento(carrinho);
 				keyPress();
 				opcao = 0;
 				break;
 			//finaliza o programa
 			case 4:
-				System.out.println(Estetica.TEXT_WHITE + Estetica.ANSI_PURPLE_BACKGROUND
-						+ FormataTexto.preenche("*", 50));
-				System.out.println(FormataTexto.centraliza("Agradecemos pela preferência!", 50));
-				System.out.println(FormataTexto.centraliza("Volte sempre!!!!", 50));
-				System.out.println(FormataTexto.preenche("*", 50));
+				Apresentacao.separador();
+				Apresentacao.centralizado("Agradecemos pela preferência!");
+				Apresentacao.centralizado("Volte sempre!!!!");
+				Apresentacao.separador();
 				leia.close();
 				System.exit(0);			
 			
 				//verifica opcao inválida e retorna para menu
 			default:
-				System.out.println(Estetica.TEXT_RED_BOLD + Estetica.ANSI_WHITE_BACKGROUND +
-						"\nOpção não existe no menu! Tente novamente\n");
+				Apresentacao.geralErro("Opção não existe no menu! Tente novamente");
 				keyPress();
 				opcao = 0;
 				break;
-		}
-			
-			
+			}
 		}while(opcao == 0); 
 
 	}
 	
 	public static void keyPress() {
 		try {
-			System.out.println(Estetica.TEXT_RESET + Estetica.ANSI_WHITE_BACKGROUND + "\n\nPressione Enter para continuar: ");
-
+			Apresentacao.geral("Pressione Enter para continuar: ");
 			System.in.read();
 		}catch(IOException e) {
-			System.out.println("Você pressionou uma tecla diferente de Enter!");
+			Apresentacao.geralErro("Você pressionou uma tecla diferente de Enter!");
 		}
 	}
 	
 	public static void mostraMenuPrincipal() {
-		System.out.println(Estetica.TEXT_WHITE + Estetica.ANSI_PURPLE_BACKGROUND
-		         + FormataTexto.preenche("*", 50));
-		System.out.println(FormataTexto.preenche(" ", 50));
-		System.out.println(FormataTexto.centraliza("Recriar", 50));
-		System.out.println(FormataTexto.centraliza("Vestuário para bonecas", 50));
-		System.out.println(FormataTexto.preenche(" ", 50));
-		System.out.println(FormataTexto.preenche("*", 50));
-		System.out.println(FormataTexto.preenche(" ", 50));
-		System.out.println(FormataTexto.centraliza("1 - Conheça nosso catálogo", 50));
-		System.out.println(FormataTexto.centraliza("2 - Carrinho de compras", 50));
-		System.out.println(FormataTexto.centraliza("3 - Pagamento", 50));
-		System.out.println(FormataTexto.centraliza("4 - Sair", 50));
-		System.out.println(FormataTexto.preenche(" ", 50));
-		System.out.println(FormataTexto.preenche("*", 50));
-		System.out.println(FormataTexto.centraliza("Entre com a opção desejada:", 50));
-		System.out.println(FormataTexto.preenche(" ", 50)+ Estetica.TEXT_RESET);
+		Apresentacao.separador();
+		Apresentacao.linha();
+		Apresentacao.centralizado("Recriar");
+		Apresentacao.centralizado("Vestuário para bonecas");
+		Apresentacao.linha();
+		Apresentacao.separador();
+		Apresentacao.linha();
+		Apresentacao.centralizado("1 - Conheça nosso catálogo");
+		Apresentacao.centralizado("2 - Carrinho de compras");
+		Apresentacao.centralizado("3 - Pagamento");
+		Apresentacao.centralizado("4 - Sair");
+		Apresentacao.linha();
+		Apresentacao.separador();
+		Apresentacao.centralizado("Entre com a opção desejada:");
+		Apresentacao.linha();
 	}
 	
 	
 	//case 1: 
 	public static void catalogo() {
-		cabecalho();
-		Produtos.listarProdutos();
+		Apresentacao.cabecalho("Catálogo");
+		produtos.listarProdutos();
 		adicionaItem();
-	}
-	
-	public static void cabecalho() {
-		//cabeçalho
-		System.out.println(Estetica.TEXT_WHITE + Estetica.ANSI_PURPLE_BACKGROUND
-						+  FormataTexto.preenche("*", 75));
-		System.out.println(FormataTexto.centraliza("Catálogo", 75));
-		System.out.println(FormataTexto.preenche("*", 75)+ Estetica.TEXT_RESET);
 	}
 	
 	public static void adicionaItem() {
 		String escolha = "";
-		
-		System.out.println("\nDesesja incluir produto ao carrinho? (S/N) ");
+		Apresentacao.geral("Desesja incluir produto ao carrinho? (S/N) ");
 		escolha = leia.next();
 		if(escolha.equalsIgnoreCase("s")) {
 			add();
@@ -129,21 +118,20 @@ public class Menu {
 	
 	public static void add() {
 		int compra = 0;
-		
-		System.out.println("\nDigite o ID do produto que deseja adicionar: ");
+		Apresentacao.geral("Digite o ID do produto que deseja adicionar: ");
 		compra = ScannersService.leInteiro();
 		if(compra == 0) {
 			return ;
 		}
 		carrinho.add(compra);
-		Produtos.resumoProduto(compra);
-		System.out.println("\nItem adicionado ao carrinho!");
+		produtos.resumoProduto(compra);
+		Apresentacao.geral("Item adicionado ao carrinho!");
 	}
 	
 	public static void visualizarCarrinho() {
-		//fazer cabeçalho do carrinho
+		Apresentacao.cabecalho("Carrinho");
 		carrinho.visualizaItens();
-		
+		carrinho.visualizaTotal();
 	}
 
 }

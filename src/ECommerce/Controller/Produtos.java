@@ -1,19 +1,29 @@
 package ECommerce.Controller;
 import ECommerce.Model.Produto;
-import ECommerce.Util.Estetica;
-import ECommerce.Util.FormataTexto;
+import ECommerce.Repository.ProdutosRepository;
+import ECommerce.Util.Apresentacao;
 
 import java.util.ArrayList;
 
-public class Produtos {
+public class Produtos implements ProdutosRepository{
 
-	private static ArrayList<Produto> listaProdutos = new ArrayList<Produto>();
+	private ArrayList<Produto> listaProdutos = new ArrayList<Produto>();
 	
+	
+	
+	public Produtos() {
+		super();
+		inicializaProdutos();
+	}
+
 	//inicializa produtos do catálogo
-	public static void inicializaProdutos() {
-		listaProdutos.add(new Produto(1, "Kit Vestido de crochê", "Vestido estilo anos 1920 com flores de crochê. Kit acompanha chapéu e bolsa no mesmo padrão.", 25));
-		listaProdutos.add(new Produto(2, "Kit terno moderno", "Camisa e calça em tecido e casaco de crochê. Kit acompanha bolsa carteira.", 20));
-		listaProdutos.add(new Produto(3, "Vestido Praia", "Vestido em tecido estilo moderno. Acompanha bolsa praia.", 15));
+	private void inicializaProdutos() {
+		listaProdutos.add(new Produto(1, "Kit Vestido de crochê", "Vestido estilo anos 1920 com flores de crochê. "
+				+ "Kit acompanha chapéu e bolsa no mesmo padrão.", 25));
+		listaProdutos.add(new Produto(2, "Kit terno moderno", "Camisa e calça em tecido e casaco de crochê. "
+				+ "Kit acompanha bolsa carteira.", 20));
+		listaProdutos.add(new Produto(3, "Vestido Praia", "Vestido em tecido estilo moderno. Acompanha bolsa "
+				+ "praia.", 15));
 		listaProdutos.add(new Produto(4, "Casaco de inverno", "Casaco em tecido estilo pele, corpo inteiro. "
 				+ "Acompanha touca, estola e regalo.", 35));
 		listaProdutos.add(new Produto(5, "Vestido longo festa", " Vestido em tecido liso, várias cores", 10));
@@ -21,17 +31,16 @@ public class Produtos {
 	}
 
 	//mostra o catálogo
-	public static void listarProdutos() {
+	public void listarProdutos() {
 		for(var produto : listaProdutos) {
-			System.out.println(Estetica.TEXT_WHITE + Estetica.ANSI_PURPLE_BACKGROUND
-	                +  FormataTexto.preenche(" ", 75));
+			Apresentacao.linha();
 			produto.visualizar();
-			System.out.println(FormataTexto.preenche("*", 75));
+			Apresentacao.separador();
 		}
 	}
 	
 	//mostra um item resumido do catálogo
-	public static void resumoProduto(int id) {
+	public void resumoProduto(int id) {
 		Produto item = null;
 		try {
 			item = buscaCatalogo(id);
@@ -39,20 +48,13 @@ public class Produtos {
 			e.printStackTrace();
 		}
 		if(item.getId() == id) {
-			visualizaResumo(item.getNome(), item.getValor());
+			item.visualizaResumo();
 		}
-		
-	}
-	
-	
-	private static void visualizaResumo(String nome, double valor) {
-		System.out.println(FormataTexto.formata(" Produto: " + nome, 50));
-		System.out.println(FormataTexto.formata(" " + Produto.formatarValor(valor), 50));
 		
 	}
 
 	//métodos auxiliares
-	public static Produto buscaCatalogo(int id) {
+	public Produto buscaCatalogo(int id) {
 		for(var item : listaProdutos) {
 			if(item.getId() == id) {
 				return item;
